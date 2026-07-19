@@ -172,72 +172,48 @@ addEventListener('pointerup', ()=>{ wDown=false; });
 /* -------------------------------------------------------------------------
    3) SPOTLIGHT + HIDDEN EGGS  (mask reveal in the margins; idle-drift on touch)
    ------------------------------------------------------------------------- */
-// little title winks in the top margins
-const TITLE_EGGS = ['i am','moving on','do you?','pretty waves','the descent','i miss you',
-              'insecure','you hurt me','worth it','made with love','curious?'];
-// real song lyrics hidden through the dark "descent" — search around to find them
-const DARK_LYRICS = ["moving on","you don't care about it","cause you never asked me",
-              "why don't you say it","i don't sleep in no more","now look at you",
-              "i'm just feeling so insecure","made with love","do you?","the descent"];
+// full meaningful lines from the "I am" EP (clay and kelsy) — hidden ONLY in the black descent
+const DARK_LYRICS = [
+  "you don't care about it",
+  "i dare you to say i'm lying",
+  "not like you ever did",
+  "always the calm before the storm",
+  "couldn't tell how high the trees are now",
+  "and it feels good to you",
+  "i tried to tell you",
+  "i just needed someone"
+];
 
 function buildEggs(){
   eggLayer.innerHTML='';
-  const wrap = document.querySelector('.wrap');
-  const wr = wrap.getBoundingClientRect();
-  const sw = stage.clientWidth;
-  const leftEdge  = wr.left + 20;                 // content column left
-  const rightEdge = wr.right - 20;                // content column right
-  const marginL = leftEdge, marginR = sw - rightEdge;
-
-  // (a) title winks in the top margins — only where the column leaves clean room
-  const top0 = 110, bottom = descent.offsetTop - 90;
-  if(sw >= 1080 && Math.min(marginL, marginR) >= 120 && bottom-top0 > 200){
-    TITLE_EGGS.forEach((txt,i)=>{
-      const left = i%2===0;
-      const el = document.createElement('span');
-      el.className='egg'; el.textContent=txt;
-      el.style.fontSize=(14+Math.random()*7).toFixed(0)+'px';
-      el.style.top=(top0 + (bottom-top0)*((i+0.5)/TITLE_EGGS.length) + (Math.random()*30-15)).toFixed(0)+'px';
-      el.style.transform=`translate(-50%,-50%) rotate(${(Math.random()*8-4).toFixed(1)}deg)`;
-      el.style.left='0px';
-      eggLayer.appendChild(el);
-      const hw = el.offsetWidth/2 + 8;                 // clamp fully inside the outer margin
-      let cx;
-      if(left){ if(leftEdge-8 < hw*2){ el.remove(); return; } cx = Math.min(Math.max(hw, 12+Math.random()*(leftEdge-24-hw*2)+hw), leftEdge-8-hw); }
-      else    { if(sw-rightEdge-8 < hw*2){ el.remove(); return; } cx = Math.min(Math.max(rightEdge+8+hw, rightEdge+8+hw+Math.random()*(marginR-16-hw*2)), sw-8-hw); }
-      el.style.left=cx.toFixed(0)+'px';
-    });
-  }
-
-  // (b) hidden song lyrics scattered through the dark descent — always
-  buildDarkLyrics(sw);
+  buildDarkLyrics(stage.clientWidth);            // secret lines live only where the page is black
   eggLayer.style.display = eggLayer.children.length ? '' : 'none';
 }
 
 function buildDarkLyrics(sw){
-  const top = descent.offsetTop, h = descent.offsetHeight;
-  if(h < 300) return;
-  const cx = sw/2, cy = top + h/2;                    // centre holds the logo + button
-  const exW = Math.min(sw*0.5, 380), exH = 220;       // keep clear of that centre
-  const maxN = sw < 560 ? 6 : (sw < 900 ? 8 : 10);    // fewer on tight screens
+  const dTop = descent.offsetTop, dH = descent.offsetHeight;
+  if(dH < 260) return;
+  // scatter strictly in the black "void" ABOVE the logo/button (the descent's top padding)
+  const padTop = parseFloat(getComputedStyle(descent).paddingTop) || 400;
+  const bandTop = dTop + 44, bandBot = dTop + Math.max(210, padTop - 56);
+  const maxN = sw < 560 ? 6 : (sw < 900 ? 7 : 8);
   const placed = [];
   for(let k=0; k<DARK_LYRICS.length && placed.length<maxN; k++){
     const el = document.createElement('span');
     el.className = 'egg egg-dark'; el.textContent = DARK_LYRICS[k];
-    el.style.fontSize = (14+Math.random()*5).toFixed(0)+'px';
+    el.style.fontSize = (15+Math.random()*4).toFixed(0)+'px';
     el.style.left='0px'; el.style.top='-9999px';
     eggLayer.appendChild(el);
     const ew = el.offsetWidth, eh = el.offsetHeight;
     let ok=false, x=0, y=0;
-    for(let tries=0; tries<44 && !ok; tries++){
-      x = Math.min(Math.max(ew/2+12, sw*0.10 + Math.random()*(sw*0.80)), sw-ew/2-12);
-      y = top + 70 + Math.random()*(h-140);
-      if(Math.abs(x-cx) < (exW+ew)/2 && Math.abs(y-cy) < (exH+eh)/2) continue;   // clear the centre
-      ok = !placed.some(p=> Math.abs(x-p.x) < (ew+p.w)/2+16 && Math.abs(y-p.y) < (eh+p.h)/2+12); // no overlap
+    for(let tries=0; tries<50 && !ok; tries++){
+      x = Math.min(Math.max(ew/2+10, sw*0.06 + Math.random()*(sw*0.88)), sw-ew/2-10);
+      y = bandTop + Math.random()*(bandBot-bandTop);
+      ok = !placed.some(p=> Math.abs(x-p.x) < (ew+p.w)/2+16 && Math.abs(y-p.y) < (eh+p.h)/2+16);
     }
     if(!ok){ el.remove(); continue; }
     el.style.left = x.toFixed(0)+'px'; el.style.top = y.toFixed(0)+'px';
-    el.style.transform = `translate(-50%,-50%) rotate(${(Math.random()*10-5).toFixed(1)}deg)`;
+    el.style.transform = `translate(-50%,-50%) rotate(${(Math.random()*8-4).toFixed(1)}deg)`;
     placed.push({x,y,w:ew,h:eh});
   }
 }
@@ -254,9 +230,8 @@ function fitInscription(){
 }
 function moveSpot(sx,sy){
   P.sx=sx; P.sy=sy;
-  spot.style.transform=`translate3d(${sx}px,${sy}px,0)`;
-  eggLayer.style.setProperty('--sx', sx+'px');
-  eggLayer.style.setProperty('--sy', sy+'px');
+  stage.style.setProperty('--sx', sx+'px');   // disc + egg-mask both read these (matches experience-i-am)
+  stage.style.setProperty('--sy', sy+'px');
 }
 
 /* -------------------------------------------------------------------------
@@ -309,7 +284,6 @@ function updateDescent(){
   // standalone: use our own viewport. embedded (auto-grown iframe doesn't scroll internally):
   // the parent posts its viewport height + the iframe's top, so we can place the doorway for real.
   const vh = host ? host.vh : innerHeight;
-  descent.style.minHeight = Math.round(vh) + 'px';   // full-screen so the "i am" moment centres vertically
   const rectTop = host ? (host.top + descent.offsetTop) : descent.getBoundingClientRect().top;
   // start the fade only once the doorway itself is climbing into view, so the
   // inscription just above it stays on clean white (no low-contrast grey stretch)
@@ -320,7 +294,8 @@ function updateDescent(){
   root.style.setProperty('--bg', bg);
   root.style.setProperty('--fg', fg);
   if(uniforms) uniforms.uInk.value = p;
-  // keep the spotlight lit through the descent — the "spotlight from i am" roams the black
+  // the spotlight (and the secret lyrics it reveals) only exist once the page is black
+  document.body.classList.toggle('spot-dark', p > 0.5);
   if(bg!==lastBg){
     lastBg=bg;
     const hex = '#'+bg.match(/\d+/g).map(n=>(+n).toString(16).padStart(2,'0')).join('');

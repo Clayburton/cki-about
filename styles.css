@@ -7,6 +7,7 @@
   --mono:'Courier Prime','Courier New',monospace;
   --script:'Petit Formal Script',cursive;
   --serif:'EB Garamond',Georgia,'Times New Roman',serif;
+  --disc-r:48px;           /* spotlight radius — matches experience-i-am; mask radius MUST equal it */
 
   /* descent state — JS drives --t 0(white)..1(black); bg/fg lerp off it */
   --t:0;
@@ -53,13 +54,13 @@ body{
 #eggLayer{
   position:absolute;
   inset:0;
-  z-index:7;                     /* above the spotlight lens so revealed text reads in true colour */
+  z-index:5;                     /* BELOW the disc, so the difference lens inverts what it reveals */
   pointer-events:none;
-  color:var(--rose-deep);
+  color:#fff;                    /* white lyrics on black -> the disc inverts them to black-on-white */
   font-family:var(--serif);
   font-style:italic;
-  -webkit-mask:radial-gradient(circle 165px at var(--sx,-999px) var(--sy,-999px), #000 34%, transparent 84%);
-          mask:radial-gradient(circle 165px at var(--sx,-999px) var(--sy,-999px), #000 34%, transparent 84%);
+  -webkit-mask:radial-gradient(circle var(--disc-r) at var(--sx,-999px) var(--sy,-999px), #000 72%, transparent 100%);
+          mask:radial-gradient(circle var(--disc-r) at var(--sx,-999px) var(--sy,-999px), #000 72%, transparent 100%);
 }
 #eggLayer .egg{
   position:absolute;
@@ -70,24 +71,26 @@ body{
   transform:translate(-50%,-50%);
   user-select:none;
 }
-#eggLayer .egg.egg-dark{ color:rgba(255,238,242,.95); opacity:.95; }   /* hidden lyrics on the black */
+#eggLayer .egg.egg-dark{ color:#fff; opacity:1; }   /* full white so the disc inverts to crisp black text */
 
 /* ---- spotlight inversion lens ---- */
-#spot{
+#spot{                            /* the exact experience-i-am spotlight: solid white difference disc */
   position:absolute;
-  top:0;left:0;
-  width:150px;height:150px;
-  margin:-75px 0 0 -75px;         /* center on the point */
+  left:var(--sx,-999px);
+  top:var(--sy,-999px);
+  width:calc(var(--disc-r) * 2);
+  height:calc(var(--disc-r) * 2);
   border-radius:50%;
-  background:radial-gradient(circle, rgba(255,255,255,.58) 0%, rgba(255,255,255,.36) 34%, rgba(255,255,255,.1) 58%, transparent 74%);
-  mix-blend-mode:difference;
+  background:#fff;
+  mix-blend-mode:difference;      /* inverts whatever sits beneath */
+  transform:translate(-50%,-50%);
   pointer-events:none;
   z-index:6;
   opacity:0;
-  transition:opacity .4s ease;
-  will-change:transform;
+  transition:opacity .45s ease;
+  will-change:left,top;
 }
-#spot.on{opacity:calc(.9 * var(--sf,1));}
+body.spot-dark #spot.on{opacity:1;}   /* only in the black descent, where the search happens */
 
 .wrap{
   position:relative;
@@ -172,9 +175,7 @@ body{
   object-fit:cover;
   object-position:50% 30%;
   display:block;
-  transition:filter .45s ease;
 }
-.bio.lit .photo img{ filter:invert(1); }   /* hover = photo negative, echoing the descent's inversion */
 .photo::after{                 /* fresnel-ish rim that lights up on hover */
   content:"";position:absolute;inset:0;border-radius:50%;
   box-shadow:inset 0 0 0 2px rgba(194,123,140,0), inset 0 0 22px rgba(194,123,140,0);
@@ -211,12 +212,12 @@ body{
 
 /* ---- I am doorway (the descent) — a full-screen black album panel, spotlit ---- */
 .doorway{
-  min-height:640px;              /* JS overrides to the real viewport height so it centres */
-  margin-top:72px;
-  padding:48px 22px;
+  margin-top:56px;
+  /* tall black "void" above (room to search + reaches full black on scroll); small trailing space below */
+  padding:440px 22px 96px;
   display:flex;
+  flex-direction:column;
   align-items:center;
-  justify-content:center;
   text-align:center;
 }
 .doorway-inner{
