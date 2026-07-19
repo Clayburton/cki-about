@@ -172,8 +172,14 @@ addEventListener('pointerup', ()=>{ wDown=false; });
 /* -------------------------------------------------------------------------
    3) SPOTLIGHT + HIDDEN EGGS  (mask reveal in the margins; idle-drift on touch)
    ------------------------------------------------------------------------- */
-const EGGS = ['i am','moving on','do you?','pretty waves','the descent','i miss you',
+// little title winks in the top margins
+const TITLE_EGGS = ['i am','moving on','do you?','pretty waves','the descent','i miss you',
               'insecure','you hurt me','worth it','made with love','curious?'];
+// real song lyrics hidden through the dark "descent" — search around to find them
+const DARK_LYRICS = ["moving on","you don't care about it","cause you never asked me",
+              "why don't you say it","i don't sleep in no more","now look at you",
+              "i'm just feeling so insecure","made with love","do you?","the descent"];
+
 function buildEggs(){
   eggLayer.innerHTML='';
   const wrap = document.querySelector('.wrap');
@@ -182,27 +188,69 @@ function buildEggs(){
   const leftEdge  = wr.left + 20;                 // content column left
   const rightEdge = wr.right - 20;                // content column right
   const marginL = leftEdge, marginR = sw - rightEdge;
+
+  // (a) title winks in the top margins — only where the column leaves clean room
   const top0 = 110, bottom = descent.offsetTop - 90;
-  if(sw < 1080 || Math.min(marginL, marginR) < 120 || bottom-top0 < 200){
-    eggLayer.style.display='none'; return;         // no clean room beside the column
+  if(sw >= 1080 && Math.min(marginL, marginR) >= 120 && bottom-top0 > 200){
+    TITLE_EGGS.forEach((txt,i)=>{
+      const left = i%2===0;
+      const el = document.createElement('span');
+      el.className='egg'; el.textContent=txt;
+      el.style.fontSize=(14+Math.random()*7).toFixed(0)+'px';
+      el.style.top=(top0 + (bottom-top0)*((i+0.5)/TITLE_EGGS.length) + (Math.random()*30-15)).toFixed(0)+'px';
+      el.style.transform=`translate(-50%,-50%) rotate(${(Math.random()*8-4).toFixed(1)}deg)`;
+      el.style.left='0px';
+      eggLayer.appendChild(el);
+      const hw = el.offsetWidth/2 + 8;                 // clamp fully inside the outer margin
+      let cx;
+      if(left){ if(leftEdge-8 < hw*2){ el.remove(); return; } cx = Math.min(Math.max(hw, 12+Math.random()*(leftEdge-24-hw*2)+hw), leftEdge-8-hw); }
+      else    { if(sw-rightEdge-8 < hw*2){ el.remove(); return; } cx = Math.min(Math.max(rightEdge+8+hw, rightEdge+8+hw+Math.random()*(marginR-16-hw*2)), sw-8-hw); }
+      el.style.left=cx.toFixed(0)+'px';
+    });
   }
-  eggLayer.style.display='';
-  EGGS.forEach((txt,i)=>{
-    const left = i%2===0;
+
+  // (b) hidden song lyrics scattered through the dark descent — always
+  buildDarkLyrics(sw);
+  eggLayer.style.display = eggLayer.children.length ? '' : 'none';
+}
+
+function buildDarkLyrics(sw){
+  const top = descent.offsetTop, h = descent.offsetHeight;
+  if(h < 300) return;
+  const cx = sw/2, cy = top + h/2;                    // centre holds the logo + button
+  const exW = Math.min(sw*0.5, 380), exH = 220;       // keep clear of that centre
+  const maxN = sw < 560 ? 6 : (sw < 900 ? 8 : 10);    // fewer on tight screens
+  const placed = [];
+  for(let k=0; k<DARK_LYRICS.length && placed.length<maxN; k++){
     const el = document.createElement('span');
-    el.className='egg'; el.textContent=txt;
-    el.style.fontSize=(14+Math.random()*7).toFixed(0)+'px';
-    el.style.top=(top0 + (bottom-top0)*((i+0.5)/EGGS.length) + (Math.random()*30-15)).toFixed(0)+'px';
-    el.style.transform=`translate(-50%,-50%) rotate(${(Math.random()*8-4).toFixed(1)}deg)`;
-    el.style.left='0px';
+    el.className = 'egg egg-dark'; el.textContent = DARK_LYRICS[k];
+    el.style.fontSize = (14+Math.random()*5).toFixed(0)+'px';
+    el.style.left='0px'; el.style.top='-9999px';
     eggLayer.appendChild(el);
-    // clamp fully inside the outer margin now that we can measure width
-    const hw = el.offsetWidth/2 + 8;
-    let cx;
-    if(left){ if(leftEdge-8 < hw*2){ el.remove(); return; } cx = Math.min(Math.max(hw, 12+Math.random()*(leftEdge-24-hw*2)+hw), leftEdge-8-hw); }
-    else    { if(sw-rightEdge-8 < hw*2){ el.remove(); return; } cx = Math.min(Math.max(rightEdge+8+hw, rightEdge+8+hw+Math.random()*(marginR-16-hw*2)), sw-8-hw); }
-    el.style.left=cx.toFixed(0)+'px';
-  });
+    const ew = el.offsetWidth, eh = el.offsetHeight;
+    let ok=false, x=0, y=0;
+    for(let tries=0; tries<44 && !ok; tries++){
+      x = Math.min(Math.max(ew/2+12, sw*0.10 + Math.random()*(sw*0.80)), sw-ew/2-12);
+      y = top + 70 + Math.random()*(h-140);
+      if(Math.abs(x-cx) < (exW+ew)/2 && Math.abs(y-cy) < (exH+eh)/2) continue;   // clear the centre
+      ok = !placed.some(p=> Math.abs(x-p.x) < (ew+p.w)/2+16 && Math.abs(y-p.y) < (eh+p.h)/2+12); // no overlap
+    }
+    if(!ok){ el.remove(); continue; }
+    el.style.left = x.toFixed(0)+'px'; el.style.top = y.toFixed(0)+'px';
+    el.style.transform = `translate(-50%,-50%) rotate(${(Math.random()*10-5).toFixed(1)}deg)`;
+    placed.push({x,y,w:ew,h:eh});
+  }
+}
+
+// keep the inscription (Greek + English) on ONE line, scaled to fit its width
+function fitInscription(){
+  const m = document.getElementById('mystery'); if(!m) return;
+  const g = m.querySelector('.m-greek'), e = m.querySelector('.m-trans');
+  m.style.fontSize = '';                                            // reset to the CSS clamp
+  const base = parseFloat(getComputedStyle(m).fontSize) || 24;
+  const avail = Math.min(690, (m.parentElement.clientWidth || 360) * 0.94);
+  const w = Math.max(g.scrollWidth, e.scrollWidth);
+  if(w > 6) m.style.fontSize = Math.min(30, Math.max(12, base*avail/w)).toFixed(1)+'px';
 }
 function moveSpot(sx,sy){
   P.sx=sx; P.sy=sy;
@@ -345,15 +393,16 @@ function loop(ts){
   if(!visible || document.hidden){ running=false; return; }
   const t = ts/1000;
 
-  // idle / touch: drift the spotlight on a slow lissajous over the egg band
+  // idle / touch: drift the spotlight on a slow lissajous over whatever's on screen,
+  // so hidden lyrics get revealed wherever you've scrolled (top winks or dark descent)
   if((!P.active || coarse) && performance.now()-P.last > (coarse?0:2500)){
     const sw = stage.clientWidth;
-    const band = Math.max(220, descent.offsetTop - 160);
-    const dx = sw*(0.5 + 0.42*Math.sin(t*0.32));               // stage-space x (= viewport x)
-    const dy = 150 + band*(0.5 + 0.5*Math.sin(t*0.21+1.3));    // stage-space y (document)
+    const vis = host ? {top:-host.top, h:host.vh} : {top:scrollY, h:innerHeight};
+    const dx = sw*(0.5 + 0.40*Math.sin(t*0.32));                // stage-space x
+    const dy = vis.top + vis.h*(0.5 + 0.42*Math.sin(t*0.21+1.3));  // roam the visible band (document)
     moveSpot(dx, dy);
     P.mx = (dx/(sw||innerWidth))*2-1;
-    P.my = -(((dy - scrollY)/innerHeight)*2-1);                // document -> viewport clip
+    P.my = -(((dy - scrollY)/innerHeight)*2-1);                // document -> canvas clip
     if(!spot.classList.contains('on')) spot.classList.add('on');
   }
 
@@ -381,7 +430,7 @@ addEventListener('scroll', ()=>{
 /* -------------------------------------------------------------------------
    boot + lifecycle
    ------------------------------------------------------------------------- */
-function relayout(){ sizeWave(); buildEggs(); updateDescent(); postHeight(); }
+function relayout(){ sizeWave(); updateDescent(); buildEggs(); fitInscription(); postHeight(); }  // descent sized before eggs are placed
 addEventListener('resize', ()=>{ if(renderer) sizePollen(); relayout(); });
 // real viewport can appear after load (embedded / fronted preview) -> re-render synchronously
 new ResizeObserver(()=>{
@@ -398,11 +447,12 @@ addEventListener('pageshow', e=>{                                   // bfcache: 
 
 try{ if(!reduce) initPollen(); }catch(_){ /* WebGL fail -> text-only, still perfect */ }
 sizeWave();
-buildEggs();
 updateDescent();
+buildEggs();
+fitInscription();
 postHeight();
 kick();
-setTimeout(postHeight, 400);              // after fonts/images settle
+setTimeout(()=>{ fitInscription(); postHeight(); }, 400);   // after fonts/images settle
 
 /* debug */
 window.__about = {

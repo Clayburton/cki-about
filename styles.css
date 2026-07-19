@@ -53,13 +53,13 @@ body{
 #eggLayer{
   position:absolute;
   inset:0;
-  z-index:1;
+  z-index:7;                     /* above the spotlight lens so revealed text reads in true colour */
   pointer-events:none;
   color:var(--rose-deep);
   font-family:var(--serif);
   font-style:italic;
-  -webkit-mask:radial-gradient(circle 96px at var(--sx,-999px) var(--sy,-999px), #000 22%, transparent 74%);
-          mask:radial-gradient(circle 96px at var(--sx,-999px) var(--sy,-999px), #000 22%, transparent 74%);
+  -webkit-mask:radial-gradient(circle 165px at var(--sx,-999px) var(--sy,-999px), #000 34%, transparent 84%);
+          mask:radial-gradient(circle 165px at var(--sx,-999px) var(--sy,-999px), #000 34%, transparent 84%);
 }
 #eggLayer .egg{
   position:absolute;
@@ -70,15 +70,16 @@ body{
   transform:translate(-50%,-50%);
   user-select:none;
 }
+#eggLayer .egg.egg-dark{ color:rgba(255,238,242,.95); opacity:.95; }   /* hidden lyrics on the black */
 
 /* ---- spotlight inversion lens ---- */
 #spot{
   position:absolute;
   top:0;left:0;
-  width:200px;height:200px;
-  margin:-100px 0 0 -100px;      /* center on the point */
+  width:150px;height:150px;
+  margin:-75px 0 0 -75px;         /* center on the point */
   border-radius:50%;
-  background:radial-gradient(circle, rgba(255,255,255,.62) 0%, rgba(255,255,255,.44) 32%, rgba(255,255,255,.13) 56%, transparent 72%);
+  background:radial-gradient(circle, rgba(255,255,255,.58) 0%, rgba(255,255,255,.36) 34%, rgba(255,255,255,.1) 58%, transparent 74%);
   mix-blend-mode:difference;
   pointer-events:none;
   z-index:6;
@@ -230,7 +231,7 @@ body{
   user-select:none;
   -webkit-user-drag:none;
 }
-.mystery > span{grid-area:1 / 1;transition:opacity .65s ease;text-align:center;}
+.mystery > span{grid-area:1 / 1;transition:opacity .65s ease;text-align:center;white-space:nowrap;}
 .m-greek{color:var(--fg);opacity:1;}
 .m-trans{color:var(--rose-deep);opacity:0;font-style:italic;}
 .mystery:hover .m-greek,.mystery:focus-visible .m-greek,.mystery.revealed .m-greek{opacity:0;}
