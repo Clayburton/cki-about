@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=EB+Garamond:ital@0;1&family=Petit+Formal+Script&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=15">
+<link rel="stylesheet" href="styles.css?v=16">
 <script type="importmap">
 { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js" } }
 </script>
@@ -37,9 +37,9 @@
 
       <section class="bios">
         <article class="bio" data-bio>
-          <div class="photo">
-            <img src="assets/clay.jpg?v=1" alt="Clay Burton" loading="lazy" decoding="async" width="520" height="520">
-          </div>
+          <button class="photo" type="button" aria-label="View a larger photo of Clay Burton">
+            <img src="assets/clay.jpg?v=1" data-full="assets/clay-lg.jpg?v=1" alt="Clay Burton" loading="lazy" decoding="async" width="520" height="520">
+          </button>
           <div>
             <h2 class="name">Clay Burton <span class="pro">(she/her)</span></h2>
             <p>Clay Burton is an inventor, music producer, drummer, and software designer from Los Angeles. She trained at the Institute of Sonology at the Royal Conservatoire in The Hague and holds a degree in Music Technology from CalArts. Whether she's building instruments, producing music, or discovering new technologies, she brings a designer's eye to everything she does.</p>
@@ -47,9 +47,9 @@
         </article>
 
         <article class="bio" data-bio>
-          <div class="photo">
-            <img src="https://i0.wp.com/clayandkelsy.com/wp-content/uploads/2023/09/785EAE7A-D879-4A00-AA23-D8D601F6B9FB.jpg?resize=440,440&amp;ssl=1" alt="Kelsy Burton" loading="lazy" decoding="async" width="440" height="440">
-          </div>
+          <button class="photo" type="button" aria-label="View a larger photo of Kelsy Burton">
+            <img src="https://i0.wp.com/clayandkelsy.com/wp-content/uploads/2023/09/785EAE7A-D879-4A00-AA23-D8D601F6B9FB.jpg?resize=440,440&amp;ssl=1" data-full="https://i0.wp.com/clayandkelsy.com/wp-content/uploads/2023/09/785EAE7A-D879-4A00-AA23-D8D601F6B9FB.jpg?w=820&amp;ssl=1" alt="Kelsy Burton" loading="lazy" decoding="async" width="440" height="440">
+          </button>
           <div>
             <h2 class="name">Kelsy Burton <span class="pro">(she/they)</span></h2>
             <p>Kelsy Burton is a singer, songwriter, and pianist from Los Angeles. She was writing songs and recording in the studio by age eleven, and hasn't stopped since. Synthesis and production are where her voice takes shape now — an instinct for sound and emotion that runs through everything Clay and Kelsy makes.</p>
@@ -74,8 +74,10 @@
       </section>
 
     </main>
+
+    <div id="lightbox" aria-hidden="true"><img id="lightboxImg" alt=""></div>
   </div>
 
-  <script type="module" src="app.js?v=16"></script>
+  <script type="module" src="app.js?v=17"></script>
 </body>
 </html>

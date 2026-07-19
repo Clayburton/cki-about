@@ -15,7 +15,7 @@ const coarse  = matchMedia('(pointer:coarse)').matches;
 const reduce  = matchMedia('(prefers-reduced-motion:reduce)').matches;
 
 /* shared pointer state (document/stage space + clip space for pollen) */
-const P = { cx:-9999, cy:-9999, sx:-9999, sy:-9999, mx:-9, my:-9, active:false, last:0 };
+const P = { cx:-9999, cy:-9999, sx:-9999, sy:-9999, mx:-9, my:-9, active:false, last:0, anchorY:null };
 
 /* -------------------------------------------------------------------------
    1) POLLEN  (three.js — one draw call, screen-space points)
@@ -192,10 +192,14 @@ function buildEggs(){
 
 function buildDarkLyrics(sw){
   const dTop = descent.offsetTop, dH = descent.offsetHeight;
-  if(dH < 260) return;
-  // scatter strictly in the black "void" ABOVE the logo/button (the descent's top padding)
-  const padTop = parseFloat(getComputedStyle(descent).paddingTop) || 400;
-  const bandTop = dTop + 44, bandBot = dTop + Math.max(210, padTop - 56);
+  if(dH < 300) return;
+  // scatter in the black bands ABOVE and BELOW the centred logo/button (the even top/bottom padding)
+  const padTop = parseFloat(getComputedStyle(descent).paddingTop) || 200;
+  const padBot = parseFloat(getComputedStyle(descent).paddingBottom) || 200;
+  const bands = [
+    [dTop + 40, dTop + Math.max(130, padTop - 30)],
+    [dTop + dH - Math.max(130, padBot - 30), dTop + dH - 40]
+  ];
   const maxN = sw < 560 ? 6 : (sw < 900 ? 7 : 8);
   const placed = [];
   for(let k=0; k<DARK_LYRICS.length && placed.length<maxN; k++){
@@ -207,8 +211,9 @@ function buildDarkLyrics(sw){
     const ew = el.offsetWidth, eh = el.offsetHeight;
     let ok=false, x=0, y=0;
     for(let tries=0; tries<50 && !ok; tries++){
+      const band = bands[k % bands.length];                 // alternate above / below
       x = Math.min(Math.max(ew/2+10, sw*0.06 + Math.random()*(sw*0.88)), sw-ew/2-10);
-      y = bandTop + Math.random()*(bandBot-bandTop);
+      y = band[0] + Math.random()*(band[1]-band[0]);
       ok = !placed.some(p=> Math.abs(x-p.x) < (ew+p.w)/2+16 && Math.abs(y-p.y) < (eh+p.h)/2+16);
     }
     if(!ok){ el.remove(); continue; }
@@ -269,6 +274,29 @@ document.querySelectorAll('.bio').forEach(b=>{
   b.addEventListener('pointerleave',()=>{ b.classList.remove('lit'); bios.classList.remove('hovering'); });
 });
 
+/* click a photo -> larger version in a framed lightbox (absolute, not fixed — iframe-safe) */
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+function updateLightboxPos(){
+  const vh = host ? host.vh : innerHeight;
+  const topDoc = host ? -host.top : scrollY;          // current viewport top in document coords
+  lightbox.style.setProperty('--ly', Math.round(topDoc + vh/2)+'px');   // centre in the visible viewport
+  lightbox.style.setProperty('--lvh', vh+'px');
+}
+function openLightbox(img){
+  lightboxImg.src = img.getAttribute('data-full') || img.src;
+  lightboxImg.alt = img.alt || '';
+  updateLightboxPos();
+  lightbox.classList.add('open');
+  lightbox.setAttribute('aria-hidden','false');
+}
+function closeLightbox(){ lightbox.classList.remove('open'); lightbox.setAttribute('aria-hidden','true'); }
+document.querySelectorAll('.photo').forEach(btn=>{
+  btn.addEventListener('click', ()=>{ const img=btn.querySelector('img'); if(img) openLightbox(img); });
+});
+lightbox.addEventListener('click', closeLightbox);
+addEventListener('keydown', e=>{ if(e.key==='Escape') closeLightbox(); });
+
 /* -------------------------------------------------------------------------
    6) THE DESCENT — scroll white -> black, broadcast bg for iOS chrome
    ------------------------------------------------------------------------- */
@@ -285,9 +313,9 @@ function updateDescent(){
   // the parent posts its viewport height + the iframe's top, so we can place the doorway for real.
   const vh = host ? host.vh : innerHeight;
   const rectTop = host ? (host.top + descent.offsetTop) : descent.getBoundingClientRect().top;
-  // start the fade only once the doorway itself is climbing into view, so the
-  // inscription just above it stays on clean white (no low-contrast grey stretch)
-  const p = Math.max(0, Math.min(1, (vh*0.60 - rectTop) / (vh*0.44)));
+  // fade over a tighter window so the shorter (even-padded) doorway still reaches
+  // full black on scroll, while the inscription above stays ~white when centred
+  const p = Math.max(0, Math.min(1, (vh*0.55 - rectTop) / (vh*0.26)));
   root.style.setProperty('--t', p.toFixed(3));
   const bg = lerpHex('#ffffff','#08070a', p);
   const fg = lerpHex('#1a1a1a','#f4f1ee', p);
@@ -342,6 +370,7 @@ function postHeight(){
    ------------------------------------------------------------------------- */
 function onMove(cx,cy){
   P.cx=cx; P.cy=cy; P.active=true; P.last=performance.now();
+  P.anchorY = cy + (host ? host.top : 0);          // cursor's fixed viewport Y (constant while the mouse is still)
   P.mx = (cx/innerWidth)*2-1; P.my = -((cy/innerHeight)*2-1);
   const r = stage.getBoundingClientRect();
   moveSpot(cx-r.left, cy-r.top);
@@ -353,7 +382,17 @@ addEventListener('pointerleave', ()=>{ P.active=false; });
 /* host (embedding iframe) tells us where it sits so the descent tracks the real scroll */
 addEventListener('message', e=>{
   const d=e.data||{};
-  if(d.ckiHost==='about'){ host={vh:d.vh, top:d.top}; updateDescent(); }
+  if(d.ckiHost==='about'){
+    host={vh:d.vh, top:d.top};
+    updateDescent();
+    // the parent scrolled (no pointermove fires inside the iframe) — keep the spotlight
+    // locked to the cursor: its content-Y = fixedViewportY - iframeTop
+    if(P.active && P.anchorY!=null){
+      const r = stage.getBoundingClientRect();
+      moveSpot(P.cx - r.left, (P.anchorY - d.top) - r.top);
+    }
+    updateLightboxPos();
+  }
 });
 
 /* -------------------------------------------------------------------------
@@ -400,12 +439,13 @@ addEventListener('scroll', ()=>{
     moveSpot(P.cx-r.left, P.cy-r.top);
   }
   updateDescent();
+  updateLightboxPos();
 }, {passive:true});
 
 /* -------------------------------------------------------------------------
    boot + lifecycle
    ------------------------------------------------------------------------- */
-function relayout(){ sizeWave(); updateDescent(); buildEggs(); fitInscription(); postHeight(); }  // descent sized before eggs are placed
+function relayout(){ sizeWave(); updateDescent(); buildEggs(); fitInscription(); updateLightboxPos(); postHeight(); }  // descent sized before eggs are placed
 addEventListener('resize', ()=>{ if(renderer) sizePollen(); relayout(); });
 // real viewport can appear after load (embedded / fronted preview) -> re-render synchronously
 new ResizeObserver(()=>{
