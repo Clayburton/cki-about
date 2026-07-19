@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=EB+Garamond:ital@0;1&family=Petit+Formal+Script&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=5">
+<link rel="stylesheet" href="styles.css?v=6">
 <script type="importmap">
 { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js" } }
 </script>
@@ -57,21 +57,25 @@
         </article>
       </section>
 
-      <section class="doorway" id="descent" aria-label="Act I: 'I am'">
-        <p class="doorway-eyebrow">Act I: 'I am'</p>
-        <p class="doorway-title">The Descent</p>
-
+      <!-- the inscription — a quiet mystery below the bios (hover / tap to translate) -->
+      <section class="inscription" aria-label="Inscription">
         <div class="mystery" id="mystery" tabindex="0" role="button" aria-label="Reveal the meaning of the inscription">
           <span class="m-greek">Αν πεθάνεις πριν πεθάνεις,<br>δεν θα πεθάνεις όταν πεθάνεις.</span>
           <span class="m-trans" id="mTrans"></span>
         </div>
+      </section>
 
-        <a class="doorway-cta" id="doorwayCta" href="https://clayandkelsy.com/i-am/" target="_top" rel="noopener">Experience I&nbsp;Am <span class="arrow">&rarr;</span></a>
+      <!-- the descent — a full-screen black doorway into "I am", lit by the spotlight -->
+      <section class="doorway" id="descent" aria-label="I am">
+        <div class="doorway-inner">
+          <img class="iam-logo" src="assets/iam-title.png?v=1" alt="I am" width="314" height="204" decoding="async">
+          <a class="mark-btn" id="doorwayCta" href="https://clayandkelsy.com/i-am/" target="_top" rel="noopener">[ experience i am ]</a>
+        </div>
       </section>
 
     </main>
   </div>
 
-  <script type="module" src="app.js?v=9"></script>
+  <script type="module" src="app.js?v=11"></script>
 </body>
 </html>

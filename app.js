@@ -261,15 +261,18 @@ function updateDescent(){
   // standalone: use our own viewport. embedded (auto-grown iframe doesn't scroll internally):
   // the parent posts its viewport height + the iframe's top, so we can place the doorway for real.
   const vh = host ? host.vh : innerHeight;
+  descent.style.minHeight = Math.round(vh) + 'px';   // full-screen so the "i am" moment centres vertically
   const rectTop = host ? (host.top + descent.offsetTop) : descent.getBoundingClientRect().top;
-  const p = Math.max(0, Math.min(1, (vh*0.92 - rectTop) / (vh*0.46)));
+  // start the fade only once the doorway itself is climbing into view, so the
+  // inscription just above it stays on clean white (no low-contrast grey stretch)
+  const p = Math.max(0, Math.min(1, (vh*0.60 - rectTop) / (vh*0.44)));
   root.style.setProperty('--t', p.toFixed(3));
   const bg = lerpHex('#ffffff','#08070a', p);
   const fg = lerpHex('#1a1a1a','#f4f1ee', p);
   root.style.setProperty('--bg', bg);
   root.style.setProperty('--fg', fg);
   if(uniforms) uniforms.uInk.value = p;
-  spot.style.setProperty('--sf', (1-Math.min(1,p*2.2)).toFixed(2));   // fade the lens into the dark
+  // keep the spotlight lit through the descent — the "spotlight from i am" roams the black
   if(bg!==lastBg){
     lastBg=bg;
     const hex = '#'+bg.match(/\d+/g).map(n=>(+n).toString(16).padStart(2,'0')).join('');
