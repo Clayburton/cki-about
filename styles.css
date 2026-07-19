@@ -117,7 +117,7 @@ body.spot-dark #spot.on{opacity:1;}   /* only in the black descent, where the se
   color:var(--rose-deep);
   line-height:1;
   letter-spacing:0;
-  cursor:pointer;
+  cursor:text;              /* it's a word in a sentence, not a link — no pointer hand */
   white-space:nowrap;
 }
 .wave .wl{display:inline-block;will-change:transform;}
@@ -205,7 +205,7 @@ body.spot-dark #spot.on{opacity:1;}   /* only in the black descent, where the se
 }
 .mystery{
   display:grid;justify-items:center;max-width:720px;margin:0 auto;
-  cursor:pointer;font-family:var(--serif);
+  cursor:default;font-family:var(--serif);   /* reveal-on-hover, not a link — no pointer hand */
   font-size:clamp(21px,3.2vw,29px);line-height:1.4;letter-spacing:.3px;
   -webkit-tap-highlight-color:transparent;
 }
