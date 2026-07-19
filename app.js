@@ -145,7 +145,7 @@ function drawWave(t){
 const SCALE=[0,2,4,7,9,12,14,16,19,21,24];            // major pentatonic
 function pluck(u, dir){
   const now = performance.now()/1000;
-  plucks.push({ u, t0:now, life:1.1, freq:26+u*22, dir });
+  plucks.push({ u, t0:now, life:1.7, freq:26+u*22, dir });   // let the ripple linger with the longer tail
   ampBoost = Math.min(ampBoost+0.5, 1.1);
   whint && whint.classList.add('gone');
   try{
@@ -155,12 +155,12 @@ function pluck(u, dir){
     const freq = 220 * Math.pow(2, semi/12);
     const o = audio.createOscillator(), g = audio.createGain();
     o.type='triangle'; o.frequency.value=freq;
-    const t0=audio.currentTime;
+    const t0=audio.currentTime, rel=2.6;                     // long release tail
     g.gain.setValueAtTime(0.0001,t0);
-    g.gain.exponentialRampToValueAtTime(0.06, t0+0.012);
-    g.gain.exponentialRampToValueAtTime(0.0001, t0+0.9);
+    g.gain.exponentialRampToValueAtTime(0.07, t0+0.010);     // quick attack
+    g.gain.exponentialRampToValueAtTime(0.0001, t0+rel);     // slow decay -> "more release"
     o.connect(g).connect(audio.destination);
-    o.start(t0); o.stop(t0+0.95);
+    o.start(t0); o.stop(t0+rel+0.1);
   }catch(_){}
 }
 function waveU(e){ const r=wcv.getBoundingClientRect(); return Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)); }
