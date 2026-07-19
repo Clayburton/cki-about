@@ -224,9 +224,9 @@ body{
   opacity:calc(var(--t) * 1.35);   /* the whole "i am" moment fades up as you descend */
 }
 .iam-logo{
-  width:clamp(150px,26vw,270px);
+  width:clamp(180px,34vw,320px);      /* vector SVG — crisp at any size */
   height:auto;
-  filter:drop-shadow(0 0 24px rgba(255,255,255,.18));
+  filter:drop-shadow(0 0 26px rgba(255,255,255,.16));
   user-select:none;
   -webkit-user-drag:none;
 }
