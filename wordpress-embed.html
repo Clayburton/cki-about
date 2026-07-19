@@ -1,0 +1,66 @@
+<!-- =======================================================================
+     CKI — About page embed
+     Paste this whole block into a Custom HTML block on the About page.
+     It full-bleeds the design across the content column, auto-grows to fit
+     (no inner scrollbar), drives the scroll-to-black descent from the real
+     page scroll, and strobes the iOS status bar with the page background.
+     Host: https://clayburton.github.io/cki-about/
+     ======================================================================= -->
+<div id="cki-about-embed">
+  <iframe id="cki-about-frame"
+          src="https://clayburton.github.io/cki-about/"
+          title="About — Clay & Kelsy"
+          scrolling="no" loading="lazy"
+          style="display:block;width:100%;height:1600px;border:0;"></iframe>
+</div>
+
+<style>
+  #cki-about-embed{
+    width:100vw;
+    position:relative;
+    left:50%;
+    transform:translateX(-50%);
+    margin:0;
+    background:#fff;
+    line-height:0;
+  }
+</style>
+
+<script>
+(function(){
+  var HOST = 'https://clayburton.github.io';
+  var wrap = document.getElementById('cki-about-embed');
+  var f    = document.getElementById('cki-about-frame');
+
+  // 1) feed the page's scroll position + viewport into the iframe so the
+  //    "descent" darkens against the real scroll (the iframe itself never scrolls)
+  function post(){
+    if(!f.contentWindow) return;
+    var r = f.getBoundingClientRect();
+    f.contentWindow.postMessage({ ckiHost:'about', vh: window.innerHeight, top: r.top }, HOST);
+  }
+  window.addEventListener('scroll', post, {passive:true});
+  window.addEventListener('resize', post);
+  f.addEventListener('load', function(){ post(); setTimeout(post,300); });
+  window.addEventListener('pageshow', post);           // bfcache restore
+  setInterval(post, 500);                              // cheap safety net
+
+  // 2) receive height (auto-grow) + background (iOS status bar / toolbar) from the iframe
+  window.addEventListener('message', function(e){
+    if(e.origin !== HOST) return;
+    var d = e.data || {};
+    if(d.cki !== 'about') return;
+    if(d.type === 'height' && d.h > 0){
+      f.style.height = d.h + 'px';
+      post();                                          // re-sync after a resize
+    }
+    if(d.type === 'bg' && /^#[0-9a-f]{6}$/i.test(d.color)){
+      document.documentElement.style.setProperty('background', d.color, 'important');
+      document.body.style.setProperty('background', d.color, 'important');
+      wrap.style.setProperty('background', d.color, 'important');
+      var m = document.querySelector('meta[name="theme-color"]');
+      if(m) m.setAttribute('content', d.color);
+    }
+  });
+})();
+</script>

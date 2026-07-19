@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>About — Clay &amp; Kelsy · CKI</title>
+<meta name="description" content="Clay and Kelsy — instrument designers, performing artists, and music producers. The story behind CKI and CK Designs.">
+<meta name="theme-color" content="#ffffff">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=EB+Garamond:ital@0;1&family=Petit+Formal+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=5">
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js" } }
+</script>
+</head>
+<body>
+  <div id="stage">
+    <canvas id="pollen" aria-hidden="true"></canvas>
+    <div id="eggLayer" aria-hidden="true"></div>
+    <div id="spot" aria-hidden="true"></div>
+
+    <main class="wrap">
+
+      <section class="intro">
+        <p>We're Clay and Kelsy — instrument designers, performing artists, and music producers. We've made music together for over a decade, and in 2021 we founded CKI, our proudly queer and woman-owned software company.</p>
+        <p>We build the instruments that have been roaming rent-free in our heads for years — playable, curated experiences made to keep you curious and make every session feel exciting again. The <span class="accent">Osc&nbsp;Collection</span> was where it began, pushing synthesis somewhere new and shaping <span class="wave" data-wave="pretty waves">pretty&nbsp;waves</span> that feel good to play, with more instruments arriving very soon.</p>
+        <p>There's a physical side to what we make, too. Through <span class="accent">CK&nbsp;Designs</span> we 3D print and hand-paint every piece ourselves — ancient relic magnets and home decor now, with more drops on the way. It's mythology for decorating your apartment: a Medusa to guard your bedroom, an Athena over your desk — real art for the spaces you actually live in.</p>
+        <p class="signature">Independent Artists <span class="sep">|</span> Los Angeles <span class="sep">|</span> Made with Love <span class="ck">C&amp;K</span></p>
+      </section>
+
+      <!-- playable "pretty wave" divider -->
+      <div class="wavewrap" id="wavewrap">
+        <canvas id="wave" aria-label="A playable waveform — pluck it" role="img"></canvas>
+        <span class="wavehint" id="wavehint">pluck the wave &darr;</span>
+      </div>
+
+      <section class="bios">
+        <article class="bio" data-bio>
+          <div class="photo">
+            <img src="https://i0.wp.com/clayandkelsy.com/wp-content/uploads/2023/09/035A2962EDIT1_0-1.jpg?resize=440,440&amp;ssl=1" alt="Clay Burton" loading="lazy" decoding="async" width="440" height="440">
+          </div>
+          <div>
+            <h2 class="name">Clay Burton <span class="pro">(she/her)</span></h2>
+            <p>Clay Burton is an inventor, music producer, drummer, and software designer from Los Angeles. She trained at the Institute of Sonology at the Royal Conservatoire in The Hague and holds a degree in Music Technology from CalArts. Whether she's building instruments, producing music, or discovering new technologies, she brings a designer's eye to everything she does.</p>
+          </div>
+        </article>
+
+        <article class="bio" data-bio>
+          <div class="photo">
+            <img src="https://i0.wp.com/clayandkelsy.com/wp-content/uploads/2023/09/785EAE7A-D879-4A00-AA23-D8D601F6B9FB.jpg?resize=440,440&amp;ssl=1" alt="Kelsy Burton" loading="lazy" decoding="async" width="440" height="440">
+          </div>
+          <div>
+            <h2 class="name">Kelsy Burton <span class="pro">(she/they)</span></h2>
+            <p>Kelsy Burton is a singer, songwriter, and pianist from Los Angeles. She was writing songs and recording in the studio by age eleven, and hasn't stopped since. Synthesis and production are where her voice takes shape now — an instinct for sound and emotion that runs through everything Clay and Kelsy makes.</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="doorway" id="descent" aria-label="Act I: 'I am'">
+        <p class="doorway-eyebrow">Act I: 'I am'</p>
+        <p class="doorway-title">The Descent</p>
+
+        <div class="mystery" id="mystery" tabindex="0" role="button" aria-label="Reveal the meaning of the inscription">
+          <span class="m-greek">Αν πεθάνεις πριν πεθάνεις,<br>δεν θα πεθάνεις όταν πεθάνεις.</span>
+          <span class="m-trans" id="mTrans"></span>
+        </div>
+
+        <a class="doorway-cta" id="doorwayCta" href="https://clayandkelsy.com/i-am/" target="_top" rel="noopener">Experience I&nbsp;Am <span class="arrow">&rarr;</span></a>
+      </section>
+
+    </main>
+  </div>
+
+  <script type="module" src="app.js?v=9"></script>
+</body>
+</html>
