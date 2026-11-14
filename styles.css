@@ -111,6 +111,9 @@ body.spot-dark #spot.on{opacity:1;}   /* only in the black descent, where the se
 .intro .signature .sep{color:var(--rose);margin:0 .55em;}
 .intro .signature .ck{font-weight:700;color:var(--fg);}
 .accent{color:var(--rose);}
+.intro a.accent{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.2em;text-decoration-color:color-mix(in srgb,var(--rose) 45%,transparent);}
+.intro a.accent:hover{text-decoration-color:var(--rose);}
+.intro a.accent:focus-visible{outline:2px solid var(--rose);outline-offset:3px;border-radius:2px;}
 .wave{
   font-family:var(--script);
   font-size:1.5em;
