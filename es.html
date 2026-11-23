@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Quiénes somos | Clay and Kelsy</title>
+<meta name="description" content="Clay and Kelsy diseñan instrumentos, actúan en vivo y producen música. La historia detrás de Clay and Kelsy Instruments y Clay and Kelsy Designs.">
+<meta name="theme-color" content="#ffffff">
+<link rel="stylesheet" href="/cki-about/fonts.css">
+<link rel="stylesheet" href="styles.css?v=17">
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js" } }
+</script>
+</head>
+<body>
+  <div id="stage">
+    <canvas id="pollen" aria-hidden="true"></canvas>
+    <div id="eggLayer" aria-hidden="true"></div>
+    <div id="spot" aria-hidden="true"></div>
+
+    <main class="wrap">
+
+      <section class="intro">
+        <p>Somos Clay and Kelsy. Llevamos más de una década haciendo música juntas, y en 2021 fundamos Clay and Kelsy Instruments, nuestra empresa de software orgullosamente queer y propiedad de mujeres.</p>
+        <p>Construimos los instrumentos que llevan años viviendo en nuestras cabezas. La <span class="accent">Osc Collection</span> fue donde empezó todo, dando forma a <span class="wave" data-wave="ondas bonitas">ondas bonitas</span> que se sienten bien al tocarlas, y muy pronto llegarán más instrumentos.</p>
+        <p>Pasamos un año haciendo la herramienta que siempre quisimos tener: <a class="accent" href="https://songwriting.clayandkelsy.com/" target="_top">Songwriting</a>, nuestra app para iPhone y iPad. No llega a ser un DAW, pero tiene herramientas suficientes para crear ideas de canciones completas y compartirlas sin pasar por el estudio.</p>
+        <p>Con <a class="accent" href="https://clayandkelsy.com/designs/" target="_top">Clay and Kelsy Designs</a> imprimimos en 3D y pintamos a mano cada pieza nosotras mismas, con inspiración en el mito y el arte sacro.</p>
+        <p class="signature">Artistas independientes <span class="sep">|</span> Los Ángeles <span class="sep">|</span> Hecho con amor <span class="ck">C&K</span></p>
+      </section>
+
+      <!-- playable "pretty wave" divider -->
+      <div class="wavewrap" id="wavewrap">
+        <canvas id="wave" aria-label="Una forma de onda que se puede tocar: puntéala" role="img"></canvas>
+        <span class="wavehint" id="wavehint">puntea la onda ↓</span>
+      </div>
+
+      <section class="bios">
+        <article class="bio" data-bio>
+          <button class="photo" type="button" aria-label="Ver una foto más grande de Clay Burton">
+            <img src="assets/clay.jpg?v=1" data-full="assets/clay-lg.jpg?v=1" alt="Clay Burton" loading="lazy" decoding="async" width="520" height="520">
+          </button>
+          <div>
+            <h2 class="name">Clay Burton <span class="pro">(ella)</span></h2>
+            <p>Clay Burton es inventora, productora musical, baterista y diseñadora de software de Los Ángeles. Se formó en el Institute of Sonology del Real Conservatorio de La Haya y tiene un título en Tecnología Musical de CalArts. Ya sea construyendo instrumentos, produciendo música o descubriendo nuevas tecnologías, aporta una mirada de diseñadora a todo lo que hace.</p>
+          </div>
+        </article>
+
+        <article class="bio" data-bio>
+          <button class="photo" type="button" aria-label="Ver una foto más grande de Kelsy Burton">
+            <img src="https://i0.wp.com/clayandkelsy.com/wp-content/uploads/2023/09/785EAE7A-D879-4A00-AA23-D8D601F6B9FB.jpg?resize=440,440&amp;ssl=1" data-full="https://i0.wp.com/clayandkelsy.com/wp-content/uploads/2023/09/785EAE7A-D879-4A00-AA23-D8D601F6B9FB.jpg?w=820&amp;ssl=1" alt="Kelsy Burton" loading="lazy" decoding="async" width="440" height="440">
+          </button>
+          <div>
+            <h2 class="name">Kelsy Burton <span class="pro">(ella/elle)</span></h2>
+            <p>Kelsy Burton es cantante, compositora y pianista de Los Ángeles. A los once años ya escribía canciones y grababa en el estudio, y no ha parado desde entonces. Hoy su voz toma forma en la síntesis y la producción: un instinto para el sonido y la emoción que atraviesa todo lo que hace Clay and Kelsy.</p>
+          </div>
+        </article>
+      </section>
+
+      <!-- the inscription — a quiet mystery below the bios (hover / tap to translate) -->
+      <section class="inscription" aria-label="Inscripción">
+        <div class="mystery" id="mystery" tabindex="0" role="button" aria-label="Revelar el significado de la inscripción">
+          <span class="m-greek">Αν πεθάνεις πριν πεθάνεις, δεν θα πεθάνεις όταν πεθάνεις.</span>
+          <span class="m-trans" id="mTrans"></span>
+        </div>
+      </section>
+
+      <!-- the descent — a full-screen black doorway into "I am", lit by the spotlight -->
+      <section class="doorway" id="descent" aria-label="I am">
+        <div class="doorway-inner"><img class="iam-logo" src="assets/iam-title.svg?v=2" alt="I am" width="892" height="344" decoding="async"> <a class="mark-btn" id="doorwayCta" href="https://clayandkelsy.com/es/i-am/" target="_top" rel="noopener">[ experimenta i am ]</a></div>
+      </section>
+
+    </main>
+
+    <div id="lightbox" aria-hidden="true"><img id="lightboxImg" alt=""></div>
+  </div>
+
+  <script type="module" src="app.js?v=17"></script>
+</body>
+</html>

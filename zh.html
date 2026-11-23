@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>关于我们 | Clay and Kelsy</title>
+<meta name="description" content="Clay and Kelsy：乐器设计师、表演艺术家和音乐制作人。Clay and Kelsy Instruments 和 Clay and Kelsy Designs 背后的故事。">
+<meta name="theme-color" content="#ffffff">
+<link rel="stylesheet" href="/cki-about/fonts.css">
+<link rel="stylesheet" href="styles.css?v=17">
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js" } }
+</script>
+<style id="ck-cjk-lines">.ck-ph{white-space:nowrap;display:inline-block}</style>
+</head>
+<body>
+  <div id="stage">
+    <canvas id="pollen" aria-hidden="true"></canvas>
+    <div id="eggLayer" aria-hidden="true"></div>
+    <div id="spot" aria-hidden="true"></div>
+
+    <main class="wrap">
+
+      <section class="intro">
+        <p>我们是 Clay and Kelsy。我们一起做音乐已经十多年了，2021 年创立了 Clay and Kelsy Instruments，这是一家由女性创立并经营的软件公司。</p>
+        <p>我们做的乐器，都是在我们脑子里转了好多年、挥之不去的那些。<span class="accent">Osc Collection</span> 是一切的开始，塑造出弹起来很舒服的<span class="wave" data-wave="漂亮的波形">漂亮波形</span>，更多乐器也很快就会到来。</p>
+        <p>我们花了一年时间，做出了一直希望拥有的工具：<a class="accent" href="https://songwriting.clayandkelsy.com/" target="_top">Songwriting</a>，我们为 iPhone 和 iPad 打造的 App。它不完全是一个 DAW，但工具足够让你不进录音室，也能做出完整的歌曲创意并分享出去。</p>
+        <p>通过 <a class="accent" href="https://clayandkelsy.com/designs/" target="_top">Clay and Kelsy Designs</a>，我们亲手 3D 打印并手绘每一件作品，灵感来自神话和神圣艺术。</p>
+        <p class="signature">独立艺术家 <span class="sep">|</span> 洛杉矶 <span class="sep">|</span> 用爱制作 <span class="ck">C&K</span></p>
+      </section>
+
+      <!-- playable "pretty wave" divider -->
+      <div class="wavewrap" id="wavewrap">
+        <canvas id="wave" aria-label="可以弹奏的波形，拨一下试试" role="img"></canvas>
+        <span class="wavehint" id="wavehint">拨动波形 ↓</span>
+      </div>
+
+      <section class="bios">
+        <article class="bio" data-bio>
+          <button class="photo" type="button" aria-label="查看 Clay Burton 的大图">
+            <img src="assets/clay.jpg?v=1" data-full="assets/clay-lg.jpg?v=1" alt="Clay Burton" loading="lazy" decoding="async" width="520" height="520">
+          </button>
+          <div>
+            <h2 class="name">Clay Burton <span class="pro">（她）</span></h2>
+            <p>Clay Burton 是来自洛杉矶的发明家、音乐制作人、鼓手和软件设计师。她曾在海牙皇家音乐学院的 Institute of Sonology（声音学研究所）学习，并拥有 CalArts（加州艺术学院）的音乐科技学位。无论是制作乐器、做音乐，还是探索新技术，她都以设计师的眼光对待自己所做的一切。</p>
+          </div>
+        </article>
+
+        <article class="bio" data-bio>
+          <button class="photo" type="button" aria-label="查看 Kelsy Burton 的大图">
+            <img src="https://i0.wp.com/clayandkelsy.com/wp-content/uploads/2023/09/785EAE7A-D879-4A00-AA23-D8D601F6B9FB.jpg?resize=440,440&amp;ssl=1" data-full="https://i0.wp.com/clayandkelsy.com/wp-content/uploads/2023/09/785EAE7A-D879-4A00-AA23-D8D601F6B9FB.jpg?w=820&amp;ssl=1" alt="Kelsy Burton" loading="lazy" decoding="async" width="440" height="440">
+          </button>
+          <div>
+            <h2 class="name">Kelsy Burton <span class="pro">（她）</span></h2>
+            <p>Kelsy Burton 是来自洛杉矶的歌手、词曲作者和钢琴家。她十一岁时就在写歌、进录音室录音，从此再没停过。如今，合成与制作是她的声音成形的地方：她对声音和情感的直觉，贯穿 Clay and Kelsy 所做的一切。</p>
+          </div>
+        </article>
+      </section>
+
+      <!-- the inscription — a quiet mystery below the bios (hover / tap to translate) -->
+      <section class="inscription" aria-label="铭文">
+        <div class="mystery" id="mystery" tabindex="0" role="button" aria-label="显示铭文的含义">
+          <span class="m-greek">Αν πεθάνεις πριν πεθάνεις, δεν θα πεθάνεις όταν πεθάνεις.</span>
+          <span class="m-trans" id="mTrans"></span>
+        </div>
+      </section>
+
+      <!-- the descent — a full-screen black doorway into "I am", lit by the spotlight -->
+      <section class="doorway" id="descent" aria-label="I am">
+        <div class="doorway-inner"><img class="iam-logo" src="assets/iam-title.svg?v=2" alt="I am" width="892" height="344" decoding="async"> <a class="mark-btn" id="doorwayCta" href="https://clayandkelsy.com/zh/i-am/" target="_top" rel="noopener">[ 体验 i am ]</a></div>
+      </section>
+
+    </main>
+
+    <div id="lightbox" aria-hidden="true"><img id="lightboxImg" alt=""></div>
+  </div>
+
+  <script type="module" src="app.js?v=17"></script>
+</body>
+</html>
